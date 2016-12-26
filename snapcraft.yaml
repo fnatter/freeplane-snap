@@ -1,0 +1,20 @@
+name: freeplane-snap
+version: 1.5.18-1
+summary: Java program for working with Mind Maps
+description: ...
+
+apps:
+  freeplane-snap:
+    command: ./freeplane.sh
+
+parts:
+  main:
+    plugin: dump
+    source: freeplane-1.5.18/
+    filesets:
+      mybuild:
+        - "*"
+    stage:
+      - $mybuild
+    snap:
+      - $mybuild

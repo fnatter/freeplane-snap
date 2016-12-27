@@ -2,6 +2,8 @@ name: freeplane-snap
 version: 1.5.18-1
 summary: Java program for working with Mind Maps
 description: ...
+confinement: devmode
+grade: stable
 
 apps:
   freeplane-snap:
@@ -11,6 +13,7 @@ parts:
   main:
     plugin: dump
     source: freeplane-1.5.18/
+    stage-packages: [openjdk-8-jre]
     filesets:
       mybuild:
         - "*"

@@ -1,0 +1,269 @@
+2a3,18
+> # Not good, needed for fontconfig
+> export XDG_DATA_HOME=$SNAP/usr/share
+> # Font Config
+> export FONTCONFIG_PATH=$SNAP/etc/fonts/config.d
+> export FONTCONFIG_FILE=$SNAP/etc/fonts/fonts.conf
+> export HOME=$SNAP_USER_DATA
+> 
+> export LIBGL_DRIVERS_PATH=$SNAP/usr/lib/x86_64-linux-gnu/dri
+> export LIBVA_DRIVERS_PATH=$SNAP/usr/lib/x86_64-linux-gnu/dri
+> export LIBGL_DEBUG=verbose
+> 
+> export PATH=$PATH:/usr/local/bin
+> export JAVA_HOME=/usr/lib/jvm/default-java
+> export JAVA_BINDIR=$JAVA_HOME/bin
+> export FREEPLANE_BASE_DIR=$SNAP/jar
+> 
+5c21
+< 	set -x
+---
+>     set -x
+11,18c27,34
+< 	if [ -n "${DEBUG}" ]; then
+< 		echo "DEBUG:   $1" >&2
+< 		shift
+< 		for text in "$@"
+< 		do
+< 			echo "         ${text}" >&2
+< 		done
+< 	fi
+---
+> #    if [ -n "${DEBUG}" ]; then
+>         echo "DEBUG:   $1" >&2
+>         shift
+>         for text in "$@"
+>         do
+>             echo "         ${text}" >&2
+>         done
+> #    fi
+22,27c38,43
+< 	echo "ERROR:   $1" >&2
+< 	shift
+< 	for text in "$@"
+< 	do
+< 		echo "         ${text}" >&2
+< 	done
+---
+>     echo "ERROR:   $1" >&2
+>     shift
+>     for text in "$@"
+>     do
+>         echo "         ${text}" >&2
+>     done
+31,73c47,89
+< 	# We try hard to find the proper 'java' command
+< 	if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+< 		_debug "Using \$JAVACMD to find java virtual machine."
+< 	elif [ -n "${JAVA_BINDIR}" ] && [ -x "${JAVA_BINDIR}/java" ]; then
+< 		JAVACMD="${JAVA_BINDIR}/java"
+< 		_debug "Using \$JAVA_BINDIR to find java virtual machine."
+< 	elif [ -n "${JAVA_HOME}" ] && [ -x "${JAVA_HOME}/bin/java" ]; then
+< 		JAVACMD="${JAVA_HOME}/bin/java"
+< 		_debug "Using \$JAVA_HOME to find java virtual machine."
+< 	else
+< 		JAVACMD=$(which java)
+< 		if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+< 			_debug "Using \$PATH to find java virtual machine."
+< 		elif [ -x /usr/bin/java ]; then
+< 			_debug "Using /usr/bin/java to find java virtual machine."
+< 			JAVACMD=/usr/bin/java
+< 		fi
+< 	fi
+< 
+< 	# if we were successful, we return 0 else we complain and return 1
+< 	if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+< 		_debug "Using '$JAVACMD' as java virtual machine..."
+< 		if [ -n "${DEBUG}" ]; then
+< 			"$JAVACMD" -version >&2
+< 		fi
+< 		if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)' -e OpenJDK); then
+< 			_error "Your Java is not a derivative from Sun's code," \
+< 			       "========================================" \
+< 			       "FREEPLANE WILL MOST PROBABLY *NOT* WORK," \
+< 			       "========================================" \
+< 			       "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH" \
+< 			       "in order to point to such a VM." \
+< 			       "See the manpage of freeplane(1) for details."
+< 			JAVA_TYPE=other
+< 		else
+< 			JAVA_TYPE=sun
+< 		fi
+< 		return 0
+< 	else
+< 		_error "Couldn't find a java virtual machine," \
+< 		       "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH."
+< 		return 1
+< 	fi
+---
+>     # We try hard to find the proper 'java' command
+>     if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+>         _debug "Using \$JAVACMD to find java virtual machine."
+>     elif [ -n "${JAVA_BINDIR}" ] && [ -x "${JAVA_BINDIR}/java" ]; then
+>         JAVACMD="${JAVA_BINDIR}/java"
+>         _debug "Using \$JAVA_BINDIR to find java virtual machine."
+>     elif [ -n "${JAVA_HOME}" ] && [ -x "${JAVA_HOME}/bin/java" ]; then
+>         JAVACMD="${JAVA_HOME}/bin/java"
+>         _debug "Using \$JAVA_HOME to find java virtual machine."
+>     else
+>         JAVACMD=$(which java)
+>         if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+>             _debug "Using \$PATH to find java virtual machine."
+>         elif [ -x /usr/bin/java ]; then
+>             _debug "Using /usr/bin/java to find java virtual machine."
+>             JAVACMD=/usr/bin/java
+>         fi
+>     fi
+> 
+>     # if we were successful, we return 0 else we complain and return 1
+>     if [ -n "${JAVACMD}" ] && [ -x "${JAVACMD}" ]; then
+>         _debug "Using '$JAVACMD' as java virtual machine..."
+>         if [ -n "${DEBUG}" ]; then
+>             "$JAVACMD" -version >&2
+>         fi
+>         if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)' -e OpenJDK); then
+>             _error "Your Java is not a derivative from Sun's code," \
+>                    "========================================" \
+>                    "FREEPLANE WILL MOST PROBABLY *NOT* WORK," \
+>                    "========================================" \
+>                    "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH" \
+>                    "in order to point to such a VM." \
+>                    "See the manpage of freeplane(1) for details."
+>             JAVA_TYPE=other
+>         else
+>             JAVA_TYPE=sun
+>         fi
+>         return 0
+>     else
+>         _error "Couldn't find a java virtual machine," \
+>                "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH."
+>         return 1
+>     fi
+77,80c93,96
+< 	if [ -f "$1" ]; then
+< 		_debug "Sourcing '$1'."
+< 		. "$1"
+< 	fi
+---
+>     if [ -f "$1" ]; then
+>         _debug "Sourcing '$1'."
+>         . "$1"
+>     fi
+84,102c100,118
+< 	if [ -z "${DEBUG}" ]; then
+< 		return 0
+< 	fi
+< 	_debug "Freeplane parameters are '${@}'."
+< 	_debug "$(uname -a)"
+< 	if [ -x "$(which lsb_release 2>/dev/null)" ]; then
+< 		_debug "$(lsb_release -a)"
+< 	else
+< 		_debug "System is not LSB conform, 'lsb_release' does not exist."
+< 	fi
+< 	if [ -x "$(which dpkg 2>/dev/null)" ]; then
+< 		_debug "The following DEB packages are installed:"
+< 		COLUMNS=132 dpkg -l | grep -i -e freeplane >&2
+< 	elif [ -x "$(which rpm 2>/dev/null)" ]; then
+< 		_debug "The following RPM packages are installed:"
+< 		rpm -qa | grep -i -e freeplane >&2
+< 	else
+< 		_debug "Neither dpkg nor rpm is installed."
+< 	fi
+---
+>     if [ -z "${DEBUG}" ]; then
+>         return 0
+>     fi
+>     _debug "Freeplane parameters are '${@}'."
+>     _debug "$(uname -a)"
+>     if [ -x "$(which lsb_release 2>/dev/null)" ]; then
+>         _debug "$(lsb_release -a)"
+>     else
+>         _debug "System is not LSB conform, 'lsb_release' does not exist."
+>     fi
+>     if [ -x "$(which dpkg 2>/dev/null)" ]; then
+>         _debug "The following DEB packages are installed:"
+>         COLUMNS=132 dpkg -l | grep -i -e freeplane >&2
+>     elif [ -x "$(which rpm 2>/dev/null)" ]; then
+>         _debug "The following RPM packages are installed:"
+>         rpm -qa | grep -i -e freeplane >&2
+>     else
+>         _debug "Neither dpkg nor rpm is installed."
+>     fi
+110,112c126,128
+<     	mkdir "$userfpdir"
+< 		mv "$old_userfpdir/1.3.x" "$userfpdir/1.3.x"
+< 		ln -s "$userfpdir/1.3.x" "$old_userfpdir/1.3.x"
+---
+>         mkdir "$userfpdir"
+>         mv "$old_userfpdir/1.3.x" "$userfpdir/1.3.x"
+>         ln -s "$userfpdir/1.3.x" "$old_userfpdir/1.3.x"
+122,125c138,141
+< findjava
+< if [ $? -ne 0 ]; then
+< 	exit 1
+< fi
+---
+> #findjava
+> #if [ $? -ne 0 ]; then
+> #    exit 1
+> #fi
+130,134c146,150
+< 	# if we have 'readlink' we can use it to get an absolute path
+< 	# -m should be faster and link does always resolve, else this script
+< 	# wouldn't be called, would it?
+< 	freefile=$(readlink -mn "$0")
+< 	_debug "Link '$0' resolved to '${freefile}'."
+---
+>     # if we have 'readlink' we can use it to get an absolute path
+>     # -m should be faster and link does always resolve, else this script
+>     # wouldn't be called, would it?
+>     freefile=$(readlink -mn "$0")
+>     _debug "Link '$0' resolved to '${freefile}'."
+136c152
+< 	freefile="$0"
+---
+>     freefile="$0"
+140c156
+< 	xdockname='-Xdock:name=Freeplane'
+---
+>     xdockname='-Xdock:name=Freeplane'
+142c158
+< 	xdockname=""
+---
+>     xdockname=""
+149c165
+< 	"${freepath}" "${freepath}/share/freeplane" "${freepath}/freeplane"
+---
+>     "${freepath}" "${freepath}/share/freeplane" "${freepath}/freeplane"
+151,155c167,171
+< 	if [ -f "${jar}/framework.jar" ]; then
+< 		freedir="${jar}"
+< 		_debug "Freeplane Directory is '${jar}'."
+< 		break
+< 	fi
+---
+>     if [ -f "${jar}/framework.jar" ]; then
+>         freedir="${jar}"
+>         _debug "Freeplane Directory is '${jar}'."
+>         break
+>     fi
+159,160c175,176
+< 	_error "Couldn't find Freeplane under '${freepath}'."
+< 	exit 1
+---
+>     _error "Couldn't find Freeplane under '${freepath}'."
+>     exit 1
+178c194
+< 	JAVA_OPTS="-Dorg.freeplane.os.lib.ext=/usr/share/java $JAVA_OPTS"
+---
+>     JAVA_OPTS="-Dorg.freeplane.os.lib.ext=/usr/share/java $JAVA_OPTS"
+182c198,199
+< "${JAVACMD}" -Xmx512m\
+---
+> $SNAP/usr/lib/jvm/default-java/bin/java -Xmx512m\
+>  "-Duser.home=$SNAP_USER_DATA"\
+194c211,212
+< "${JAVACMD}" -Xmx512m\
+---
+> $SNAP/usr/lib/jvm/default-java/bin/java -Xmx512m\
+>  "-Duser.home=$SNAP_USER_DATA"\

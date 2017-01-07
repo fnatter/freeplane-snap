@@ -7,13 +7,27 @@ grade: stable
 
 apps:
   freeplane-snap:
-    command: ./freeplane.sh
+    #command: ./freeplane.sh
+    command: wrapper
+    plugs: [home, x11, opengl, network, unity7]
 
 parts:
+  starter:
+    plugin: dump
+    source: .
+    filesets:
+      mystarter:
+        - wrapper
+    stage:
+      - $mystarter
+    snap:
+      - $mystarter
+  jdkfiles:
+    plugin: jdk
   main:
     plugin: dump
     source: freeplane-1.5.18/
-    stage-packages: [openjdk-8-jre]
+    #stage-packages: [openjdk-8-jre]
     filesets:
       mybuild:
         - "*"
